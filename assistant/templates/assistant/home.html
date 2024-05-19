@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice Assistant with Background Effect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px #000000;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #004494;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #000000;
+            transition: color 0.3s ease;
+        }
+
+        p:empty {
+            display: none;
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: black;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #controls {
+            color: rgb(255, 255, 255);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 999;
+            /* background-color: rgba(0, 0, 0, 0); */
+            padding: 10px;
+        }
+
+        canvas {
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-image);
+            background-size: 100vw 100vh;
+            filter: url('#swirl');
+            animation: bannermove 60s linear infinite;
+            background-repeat: repeat;
+        }
+
+        @keyframes bannermove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 100vw 100vw;
+            }
+        }
+
+        :root {
+            --bg-image: url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F001%2F760%2F936%2Flarge_2x%2Fdark-blue-pattern-with-curves-vector.jpg&f=1&nofb=1&ipt=14661992d1aeed04c295335236443cb829584063f66a097dbd1cdfece651182b&ipo=images');
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas></canvas>
+    </div>
+    <div id="controls">
+        <p>Complexity</p>
+        <input type="range" id="rangeSlider" min="0" max="5" value="1">
+    </div>
+
+    <h1>Voice Opreated Assistant</h1>
+    <button id="start-record-btn" onclick="startRecording()">Give Command</button>
+    <p id="response"></p>
+
+    <svg>
+        <filter id="swirl">
+            <feTurbulence
+                baseFrequency="0.01"
+                numOctaves="1"
+                result="wrap"
+                type="fractalNoise">
+            </feTurbulence>
+            <feDisplacementMap
+                id="liquid"
+                class="liquid"
+                in="SourceGraphic"
+                in2="wrap"
+                scale="300"
+                xChannelSelector="R"
+                yChannelSelector="B">
+            </feDisplacementMap>
+        </filter>
+    </svg>
+
+    <script>
+        function startRecording() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-US";
+            recognition.onresult = function(event) {
+                var command = event.results[0][0].transcript;
+                console.log('Command:', command);
+
+                fetch('/process_command/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: 'command=' + encodeURIComponent(command)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var responseElement = document.getElementById('response');
+                    responseElement.innerText = data.response;
+                    responseElement.style.color = "#ffd700";  // Change the response color to gold for visibility
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            recognition.start();
+        }
+
+        const slider = document.getElementById('rangeSlider');
+        const svg = document.querySelector('feTurbulence');
+
+        slider.addEventListener('input', function() {
+            const value = this.value;
+            svg.setAttribute('numOctaves', value);
+        });
+    </script>
+</body>
+</html>
