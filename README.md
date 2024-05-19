@@ -51,8 +51,8 @@ Voice Operated Assistant is a Python-based application that utilizes speech reco
 ### Usage
 
 1.  Run the program.
-2.  Speak commands to Jarvis Voice Assistant.
-3.  Jarvis will perform the requested actions based on the commands.
+2.  Speak commands to VOA Assistant.
+3.  VOA will perform the requested actions based on the commands.
 4.  Terminate the program by pressing Ctrl+C.
 
 ### Demo
