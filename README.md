@@ -62,3 +62,37 @@ Here is a demo presentation of the Voice Operated Assistant and how to make the 
 ### Conclusion
 
 Voice Operated Assistant provides a convenient and interactive way to perform various tasks using voice commands. With its versatile functionality and easy-to-use interface, it enhances user experience and productivity.
+
+
+
+DjangoVOA/
+│
+├── env/                       
+├── VoiceAssistantProject/                    
+│   ├── assistant/                      
+│   |   ├── __pycache__       
+│   |   ├── migrations/         
+│   |   ├── templates/ 
+|   |   |   ├── assistant/  
+│   |   |   |   ├── home.html
+│   |   |   ├── static/  
+│   |   ├── __init__.py
+│   |   ├── admin.py
+│   |   ├── forms.py
+│   |   ├── models.py
+│   |   ├── tests.py
+│   |   ├── urls.py
+│   |   └── views.py
+|   ├── VoiceAssistantProject/                       
+│   |   ├── __pycache__/       
+│   |   ├── __init__.py
+│   |   ├── asgi.py
+│   |   ├── settings.py
+│   |   ├── urls.py
+│   |   └── wsgi.py
+|   ├── db.sqlite3
+|   ├── manage.py
+└── └── remember.txt
+
+
+
